@@ -11,19 +11,10 @@ Tracks and manages a single `Timewarrior` tag.
 4. Ensure that [xfce4-genmon-plugin](https://gitlab.xfce.org/panel-plugins/xfce4-genmon-plugin) is installed;
 5. Add an instance of the `genmon` to your panel;
 6. Set the `Command` to `/usr/local/bin/xfce4-genmon-timewarrior.sh TAG`, where `TAG` is the timewarrior tag that you want to track. Adjust the path if you copied the script elsewhere;
+7. Optionally, pass `--left` and/or `--right` to surround the text with white separators (`|`).
 7. The plugin refreshes every `Period` seconds. Set that to whatever you want.
 
 ## Usage
 
-Click on the icon or the text to toggle the tracking. Hover mouse over the icon or the text to see today's tag summary.
+Click on the text to toggle the tracking. Hover mouse over the text to see today's tag summary.
 
-## Troubleshooting
-
-### icons not displaying
-
-The script tries to detect your current theme and sets the icons appropriately, but I've not really tested it much. If you cannot see the icons on the `genmon` you'll need to adjust the icons config:
-
-```shell
-theme=$(xfconf-query -lvc xsettings -p /Net/ThemeName | awk '{ print $2}')
-icons_dir="/usr/share/icons/${theme}/24x24/actions"
-```

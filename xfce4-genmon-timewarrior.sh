@@ -1,37 +1,41 @@
 #!/usr/bin/env bash
 
-# for now the script works with individual tags only
-tag=$1
+# For now the script works with individual tags only.
+# It can display simple, white separators on the left and/or right edges when used with `--left` and/or `--right`.
+
+while [[ "$#" -gt 0 ]]; do
+	case $1 in
+		--left) left=true ;;
+		--right) right=true ;;
+		--tag) tag="$2"; shift ;;
+		*) echo -e "Unkown param: $1\nUsage: $0 [--left] [--rigth] --tag tag"; exit 1 ;;
+	esac
+	shift
+done
 
 if [ -z "$tag" ]; then
 	echo "A tag must be provided"
 	exit 1
 fi
 
-# Using the start / stop icons from the current Xfce4 theme
-theme=$(xfconf-query -lvc xsettings -p /Net/ThemeName | awk '{ print $2}')
-icons_dir="/usr/share/icons/${theme}/24x24/actions"
-start_icon="${icons_dir}/media-record-symbolic.symbolic.png"
-stop_icon="${icons_dir}/media-playback-stop-symbolic.symbolic.png"
-
 if timew | grep -q "Tracking ${tag}$"; then
-	style="foreground='#A31515'"
-	txt="${tag} (active)"
-	icon=$stop_icon
+	style="foreground='#AA00AA'"
+	txt="${tag}"
 	on_click="timew stop ${tag}"
 	echo "$txt"
 else
-	style="foreground='#000000'"
-	txt="${tag} (-)"
-	icon=$start_icon
+	style="foreground='#FFFFFF'"
+	txt="no ${tag}"
 	on_click="timew start ${tag}"
 	echo "$txt"
 fi
 
-cat << EOF
-<img>$icon</img>
-<txt><span ${style}>${txt}</span></txt>
+white_separator="<span foreground='#FFFFFF'>|</span>"
+[[ "$right" == "true" ]] && right_separator=$white_separator
+[[ "$left" == "true" ]] && left_separator=$white_separator
 
+cat << EOF
+<txt>${left_separator}<span ${style}>${txt}</span>${right_separator}</txt>
 <tool><span font-family="monospace">$(timew summary "${tag}")</span></tool>
 <click>$on_click</click>
 <txtclick>$on_click</txtclick>
